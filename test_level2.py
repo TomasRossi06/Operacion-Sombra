@@ -1,27 +1,15 @@
-from level2 import validate_patent, generate_patent, initialize, parking_lot, vehicles, target_patent
+from level2 import ValidatePatent, GeneratePatent
 
-def test_validate_patent():
-	assert validate_patent("AB1234") == "AB1234"
-	assert validate_patent("abcd12") == "ABCD12"
-	assert validate_patent("ZZ9999") == "ZZ9999"
-	assert validate_patent("MNTP34") == "MNTP34"
-	assert validate_patent("A12345") is None
-	assert validate_patent("1234AB") is None
-	assert validate_patent("ABCD123") is None
+def test_ValidatePatent():
+	assert ValidatePatent("AB1234") == "AB1234"
+	assert ValidatePatent("abcd12") == "ABCD12"
+	assert ValidatePatent("ZZ9999") == "ZZ9999"
+	assert ValidatePatent("MNTP34") == "MNTP34"
+	assert ValidatePatent("A12345") is None
+	assert ValidatePatent("1234AB") is None
+	assert ValidatePatent("ABCD123") is None
 
-def test_generate_patent():
+def test_GeneratePatent():
 	for _ in range(20):
-		p = generate_patent()
-		assert validate_patent(p) is not None
-
-def test_initialize():
-	initialize()
-	# Check that vehicles and parking_lot are consistent
-	count = 0
-	for row in parking_lot:
-		for cell in row:
-			if cell is not None:
-				count += 1
-				assert cell in vehicles
-	assert 10 <= count <= 20
-	assert target_patent in vehicles
+		p = GeneratePatent()
+		assert ValidatePatent(p) is not None

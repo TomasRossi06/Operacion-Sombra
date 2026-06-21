@@ -11,7 +11,7 @@ abcedary = list("abcdefghijklmnopqrstuvwxyz")
 word = "agente"
 
 
-def generate_displacement():
+def GenerateDisplacement():
     """
     | Descripcion: Genera un numero de desplazamiento aleatorio para el cifrado Cesar.
     | Entrada: No recibe parametros.
@@ -21,7 +21,7 @@ def generate_displacement():
     return random.randint(1, 10)
 
 
-def code_cesar(text, displacement):
+def CodeCesar(text, displacement):
     """
     | Descripcion: Cifra un texto usando el metodo Cesar.
     |              Cada letra se reemplaza por la que esta N posiciones mas adelante
@@ -40,7 +40,7 @@ def code_cesar(text, displacement):
     return result
 
 
-def decode_cesar(text, displacement):
+def DecodeCesar(text, displacement):
     """
     | Descripcion: Descifra un texto cifrado con el metodo Cesar. Hace el proceso inverso al cifrado: resta el desplazamiento
     |              en lugar de sumarlo para recuperar la letra original.
@@ -67,8 +67,8 @@ def Level1():
     |         False si la respuesta fue incorrecta.
     """
 
-    displacement  = generate_displacement()
-    encryptedword = code_cesar(word, displacement)
+    displacement  = GenerateDisplacement()
+    encryptedword = CodeCesar(word, displacement)
 
     print("\n######################################")
     print("       NIVEL 1: CIFRADO CESAR")
@@ -78,9 +78,14 @@ def Level1():
     print("  Descifra la palabra y escribila abajo.\n")
 
     
-    user_word = input("  Ingresa la palabra: ").strip()
+    try:
+        UserWord = input("  Ingresa la palabra: ").strip()
 
-    if user_word.lower() == word.lower():
+    except Exception as e:
+        print("Error", e)
+        return False
+
+    if UserWord.lower() == word.lower():
         print("  [OK] Correcto! Acceso concedido.")
         return True
     else:
