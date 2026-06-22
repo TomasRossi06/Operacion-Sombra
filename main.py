@@ -13,19 +13,18 @@ from level4 import Level4
 
 # NOTAS CLASE 8 EXCEPCIONES, CLASE 9 PRUEBAS DE DESARROLLO, CLASE 10 ARCHIVOS TXT CSV, CLASE 11 ARCHIVOS JSON, CLASE 12 RECURSIVIDAD
 
-ActPath = os.path.dirname(__file__)
-FilePath = os.path.join(ActPath,"operacion_sombra.json")
+ActPath  = os.path.dirname(__file__)
+FilePath = os.path.join(ActPath, "operacion_sombra.json")
 
 
-
-def SaveData():
+def SaveData(profiles, ranking):
     """
     | Descripcion: Guarda el estado actual de profiles y ranking en un archivo JSON.
     |              El archivo se crea o sobreescribe en la misma carpeta del script.
-    | Entrada: No recibe parametros. Lee las variables globales profiles y ranking.
+    | Entrada: profiles -> diccionario con los perfiles de los jugadores.
+    |          ranking  -> diccionario con los puntajes acumulados.
     | Salida: No retorna nada.
     """
-
     try:
         data = {
             "profiles": profiles,
@@ -40,30 +39,26 @@ def SaveData():
 def LoadData():
     """
     | Descripcion: Carga profiles y ranking desde el archivo JSON si existe.
-    |              Si el archivo no existe o esta corrupto, deja los diccionarios vacios.
+    |              Si el archivo no existe o esta corrupto, retorna diccionarios vacios.
     | Entrada: No recibe parametros.
-    | Salida: No retorna nada. Modifica las variables globales profiles y ranking.
+    | Salida: Una tupla (profiles, ranking) con los datos cargados.
     """
-    global profiles, ranking
     if not os.path.exists(FilePath):
-        return
+        return {}, {}
     try:
         with open(FilePath) as f:
             data = json.load(f)
-        profiles = data.get("profiles", {})
-        ranking  = data.get("ranking",  {})
+        return data.get("profiles", {}), data.get("ranking", {})
     except Exception as e:
         print(" Error.", e)
+        return {}, {}
 
 
 # =============================================================================
-#  DATOS GLOBALES
+#  CONSTANTES
 # =============================================================================
 
-profiles    = {}
-ranking     = {}
-Secret_code = "NIVEL99"
-
+Secret_code  = "NIVEL99"
 Total_levels = 4
 
 BANNER = """
@@ -102,13 +97,14 @@ def pause():
 #  GESTION DE PERFILES
 # =============================================================================
 
-def CreateProfile():
+def CreateProfile(profiles, ranking):
     """
     | Descripcion: Menu para crear un nuevo perfil de jugador.
     |              Valida que el nombre no este vacio ni repetido.
     |              Guarda automaticamente al crear el perfil.
-    | Entrada: Nombre de usuario ingresado por teclado.
-    | Salida: Nuevo perfil agregado al diccionario profiles. No retorna ningun valor.
+    | Entrada: profiles -> diccionario con los perfiles existentes.
+    |          ranking  -> diccionario con los puntajes (necesario para guardar).
+    | Salida: No retorna nada. Modifica profiles en el lugar.
     """
     clean()
     print(BANNER)
@@ -124,7 +120,7 @@ def CreateProfile():
         return
 
     if name in profiles:
-        print(f"  [!] El usuario '{name}' ya existe.")
+        print(f"  [!] El usuario {name} ya existe.")
         pause()
         return
 
@@ -134,15 +130,15 @@ def CreateProfile():
         "special_access": False
     }
 
-    SaveData()
-    print(f"  [OK] Perfil '{name}' creado con exito.")
+    SaveData(profiles, ranking)
+    print(f"  [OK] Perfil {name} creado con exito.")
     pause()
 
 
-def SelectUser():
+def SelectUser(profiles):
     """
     | Descripcion: Muestra la lista de profiles y pide elegir uno por numero.
-    | Entrada: Seleccion numerica ingresada por teclado.
+    | Entrada: profiles -> diccionario con los perfiles existentes.
     | Salida: string con el nombre del perfil elegido, o False si cancela.
     """
     if not profiles:
@@ -182,11 +178,12 @@ def SelectUser():
 #  PARTIDA
 # =============================================================================
 
-def StartGame():
+def StartGame(profiles, ranking):
     """
     | Descripcion: Permite al jugador elegir un nivel e iniciarlo.
     |              Guarda automaticamente al completar o fallar un nivel.
-    | Entrada: Seleccion de usuario y nivel ingresada por teclado.
+    | Entrada: profiles -> diccionario con los perfiles de los jugadores.
+    |          ranking  -> diccionario con los puntajes acumulados.
     | Salida: No retorna nada.
     """
     clean()
@@ -195,7 +192,7 @@ def StartGame():
     print("  |       INICIAR PARTIDA       |")
     print("  +-----------------------------+\n")
 
-    name = SelectUser()
+    name = SelectUser(profiles)
     if name is False:
         return
 
@@ -257,15 +254,12 @@ def StartGame():
         if level == max_level and max_level < Total_levels:
             profiles[name]["max_level"] += 1
             print(f"  [OK] Nivel {level + 1} desbloqueado.")
-        UpdateRanking(name, level)
+        UpdateRanking(ranking, name, level)
     else:
         print(f"\n  [!] Nivel {level} no superado. Vuelve a intentarlo.")
 
     profiles[name]["games"] += 1
-
-    # Guardar progreso automaticamente al terminar cada partida
-    SaveData()
-
+    SaveData(profiles, ranking)
     pause()
 
 
@@ -273,12 +267,13 @@ def StartGame():
 #  CODIGO SECRETO
 # =============================================================================
 
-def AccessSecretCode():
+def AccessSecretCode(profiles, ranking):
     """
     | Descripcion: Permite ingresar un codigo secreto para desbloquear todos los niveles.
     |              Guarda automaticamente si el codigo es correcto.
-    | Entrada: Nombre de usuario y codigo por teclado.
-    | Salida: Modifica el perfil del jugador si el codigo es correcto. No retorna ningun valor.
+    | Entrada: profiles -> diccionario con los perfiles de los jugadores.
+    |          ranking  -> diccionario con los puntajes (necesario para guardar).
+    | Salida: No retorna nada. Modifica el perfil del jugador si el codigo es correcto.
     """
     clean()
     print(BANNER)
@@ -286,7 +281,7 @@ def AccessSecretCode():
     print("  |       CODIGO SECRETO        |")
     print("  +-----------------------------+\n")
 
-    name = SelectUser()
+    name = SelectUser(profiles)
     if name is False:
         return
 
@@ -295,7 +290,7 @@ def AccessSecretCode():
     if code == Secret_code:
         profiles[name]["special_access"] = True
         profiles[name]["max_level"]       = 6
-        SaveData()
+        SaveData(profiles, ranking)
         print("  [OK] Codigo correcto. Todos los niveles desbloqueados.")
     else:
         print("  [!] Codigo incorrecto.")
@@ -307,23 +302,24 @@ def AccessSecretCode():
 #  RANKING
 # =============================================================================
 
-def UpdateRanking(name, level):
+def UpdateRanking(ranking, name, level):
     """
     | Descripcion: Registra el puntaje obtenido al completar un nivel. Score = nivel x 100.
-    | Entrada: name  -> string con el nombre del jugador.
-    |          level -> entero con el numero de nivel completado.
-    | Salida: Modifica el diccionario ranking. No retorna ningun valor.
+    | Entrada: ranking -> diccionario con los puntajes acumulados.
+    |          name    -> string con el nombre del jugador.
+    |          level   -> entero con el numero de nivel completado.
+    | Salida: No retorna nada. Modifica ranking en el lugar.
     """
     if name not in ranking:
         ranking[name] = {"score": 0, "completed_levels": 0}
-    ranking[name]["score"]             += level * 100
-    ranking[name]["completed_levels"]  += 1
+    ranking[name]["score"]            += level * 100
+    ranking[name]["completed_levels"] += 1
 
 
-def ShowRanking():
+def ShowRanking(ranking):
     """
     | Descripcion: Muestra la tabla de puntajes ordenada de mayor a menor.
-    | Entrada: No recibe parametros.
+    | Entrada: ranking -> diccionario con los puntajes acumulados.
     | Salida: No retorna nada. Solo imprime el ranking en pantalla.
     """
     clean()
@@ -339,11 +335,11 @@ def ShowRanking():
 
     table = sorted(ranking.items(), key=lambda x: x[1]["score"], reverse=True)
 
-    print(f"  {'#':<4} {'Agente':<20} {'Score':>8}  {'Niveles':>7}")
+    print(f"  {"#":<4} {"Agente":<20} {"Score":>8}  {"Niveles":>7}")
     print("  " + "-" * 44)
     for i, (player, data) in enumerate(table, 1):
         pos = f"{i}."
-        print(f"  {pos:<4} {player:<20} {data['score']:>8}  {data['completed_levels']:>5} niv.")
+        print(f"  {pos:<4} {player:<20} {data["score"]:>8}  {data["completed_levels"]:>5} niv.")
 
     pause()
 
@@ -359,7 +355,7 @@ def MainMenu():
     | Entrada: Opcion numerica ingresada por teclado.
     | Salida: No retorna nada.
     """
-    LoadData()
+    profiles, ranking = LoadData()
 
     executing = True
     while executing:
@@ -377,10 +373,14 @@ def MainMenu():
 
         option = input("\n  Opcion: ").strip()
 
-        if   option == "1": CreateProfile()
-        elif option == "2": StartGame()
-        elif option == "3": AccessSecretCode()
-        elif option == "4": ShowRanking()
+        if   option == "1": 
+            CreateProfile(profiles, ranking)
+        elif option == "2": 
+            StartGame(profiles, ranking)
+        elif option == "3": 
+            AccessSecretCode(profiles, ranking)
+        elif option == "4": 
+            ShowRanking(ranking)
         elif option == "0":
             clean()
             print("\n  Hasta la proxima, agente.\n")
