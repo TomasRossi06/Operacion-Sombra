@@ -11,7 +11,22 @@ import re
 ROWS    = 5
 COLUMNS = 6
 
+<<<<<<< HEAD
 def validate_patent(patent):
+=======
+'''
+parking_lot: matriz (lista de listas) que representa las cocheras.
+vehicles: diccionario que relaciona cada patente con su posicion [fila, columna]. Ejemplo: {"AB1234": [2, 3], "XY9900": [0, 5]}
+target_patent: string con la patente que el jugador debe encontrar.Cada celda contiene una patente (string) o None si esta vacia.'''
+
+
+parking_lot = [[None] * COLUMNS for i in range(ROWS)]
+vehicles = {}
+target_patent = None
+
+
+def ValidatePatent(patent):
+>>>>>>> feature-level-2
     """
     | Descripcion: Verifica que una patente tenga un formato valido. Acepta dos formatos:
     |                - Formato viejo: 2 letras + 4 numeros  (ej: AB1234)
@@ -57,7 +72,9 @@ def initialize():
     |           vehicles      -> diccionario {patent: [fila, columna]}.
     |           target_patent -> string con la patente que el jugador debe encontrar.
     """
-    parking_lot = [[None] * COLUMNS for _ in range(ROWS)]
+    global target_patent, parking_lot, vehicles
+
+    parking_lot = [[None] * COLUMNS for i in range(ROWS)]
     vehicles = {}
 
     positions = [[f, c] for f in range(ROWS) for c in range(COLUMNS)]
@@ -159,7 +176,7 @@ def Level2():
     |         False si supero el limite de errores o abandono la mision.
     """
     initialize()
-    errors    = 0
+    errors = 0
     MAX_errors = 3
 
     while True:
