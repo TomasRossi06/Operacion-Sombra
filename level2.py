@@ -11,7 +11,7 @@ ROWS    = 5
 COLUMNS = 6
 
 
-def validate_patent(patent):
+def ValidatePatent(patent):
     """
     | Descripcion: Verifica que una patent tenga un formato valido. Acepta dos formatos:
     |                - Formato viejo: 2 letras + 4 numeros  (ej: AB1234)
@@ -26,7 +26,7 @@ def validate_patent(patent):
     return None
 
 
-def generate_patent():
+def GeneratePatent():
     """
     | Descripcion: Genera una patente aleatoria valida. Con probabilidad 50/50 elige
     |              entre el formato viejo (2L+4N) o el formato nuevo (4L+2N).
@@ -67,9 +67,9 @@ def initialize():
     used_patents = []
 
     for f, c in positions[:amount]:
-        p = generate_patent()
+        p = GeneratePatent()
         while p in used_patents:
-            p = generate_patent()
+            p = GeneratePatent()
         used_patents.append(p)
         parking_lot[f][c] = p
         vehicles[p] = [f, c]
@@ -82,7 +82,7 @@ def initialize():
     return parking_lot, vehicles, target_patent
 
 
-def show_parking_lot(parking_lot):
+def ShowParkingLot(parking_lot):
     """
     | Descripcion: Imprime en consola la grilla del estacionamiento. Las celdas vacias muestran ".".
     | Entrada: parking_lot -> matriz (lista de listas) con el estado actual del estacionamiento.
@@ -178,7 +178,7 @@ def Level2():
         option = input("  option: ").strip()
 
         if option == "1":
-            show_parking_lot(parking_lot)
+            ShowParkingLot(parking_lot)
 
         elif option == "2":
             result = search(parking_lot, vehicles, target_patent, errors)
