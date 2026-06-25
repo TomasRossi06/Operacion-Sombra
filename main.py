@@ -4,10 +4,10 @@ import random
 import os
 import json
 
-#from level1 import Level1
-#from level2 import Level2
-#from level3 import Level3
-#from level4 import Level4
+from level1 import Level1
+from level2 import Level2
+from level3 import Level3
+from level4 import Level4
 
 
 
@@ -240,14 +240,14 @@ def StartGame(profiles, ranking):
 
     completed = False
 
-    #if level == 1:
-        #completed = Level1() == True
-    #elif level == 2:
-        #completed = Level2() == True
-    #elif level == 3:
-        #completed = Level3() == True
-    #elif level == 4:
-        #completed = Level4() == True
+    if level == 1:
+        completed = Level1() == True
+    elif level == 2:
+        completed = Level2() == True
+    elif level == 3:
+        completed = Level3() == True
+    elif level == 4:
+        completed = Level4() == True
 
     if completed:
         print(f"\n  [OK] Nivel {level} superado.")
