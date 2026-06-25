@@ -11,18 +11,7 @@ import re
 ROWS    = 5
 COLUMNS = 6
 
-'''
-parking_lot: matriz (lista de listas) que representa las cocheras.
-vehicles: diccionario que relaciona cada patente con su posicion [fila, columna]. Ejemplo: {"AB1234": [2, 3], "XY9900": [0, 5]}
-target_patent: string con la patente que el jugador debe encontrar.Cada celda contiene una patente (string) o None si esta vacia.'''
-
-
-parking_lot = [[None] * COLUMNS for _ in range(ROWS)]
-vehicles       = {}
-target_patent = None
-
-
-def ValidatePatent(patent):
+def validate_patent(patent):
     """
     | Descripcion: Verifica que una patente tenga un formato valido. Acepta dos formatos:
     |                - Formato viejo: 2 letras + 4 numeros  (ej: AB1234)
@@ -59,15 +48,17 @@ def GeneratePatent():
 
 def initialize():
     """
-    | Descripcion: Prepara el estacionamiento para una nueva partida. Limpia la grilla, genera entre 10 y 20 vehicles con patentes
-    |              unicas en positions aleatorias, y elige uno como objetivo.
-    | Entrada: No recibe parametros. Modifica las variables globales: parking_lot, vehicles, target_patent.
-    | Salida: No retorna nada. Imprime la patente objetivo en pantalla.
+    | Descripcion: Prepara el estacionamiento para una nueva partida. Genera una grilla limpia,
+    |              coloca entre 10 y 20 vehiculos con patentes unicas en posiciones aleatorias,
+    |              y elige uno como objetivo.
+    | Entrada: No recibe parametros.
+    | Salida: Una tupla (parking_lot, vehicles, target_patent) con el estado inicial de la partida.
+    |           parking_lot   -> matriz (lista de listas) con las patentes ubicadas.
+    |           vehicles      -> diccionario {patent: [fila, columna]}.
+    |           target_patent -> string con la patente que el jugador debe encontrar.
     """
-    global target_patent, parking_lot, vehicles
-
     parking_lot = [[None] * COLUMNS for _ in range(ROWS)]
-    vehicles       = {}
+    vehicles = {}
 
     positions = [[f, c] for f in range(ROWS) for c in range(COLUMNS)]
 
