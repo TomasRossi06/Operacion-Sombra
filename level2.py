@@ -11,9 +11,6 @@ import re
 ROWS    = 5
 COLUMNS = 6
 
-<<<<<<< HEAD
-def validate_patent(patent):
-=======
 '''
 parking_lot: matriz (lista de listas) que representa las cocheras.
 vehicles: diccionario que relaciona cada patente con su posicion [fila, columna]. Ejemplo: {"AB1234": [2, 3], "XY9900": [0, 5]}
@@ -26,7 +23,6 @@ target_patent = None
 
 
 def ValidatePatent(patent):
->>>>>>> feature-level-2
     """
     | Descripcion: Verifica que una patente tenga un formato valido. Acepta dos formatos:
     |                - Formato viejo: 2 letras + 4 numeros  (ej: AB1234)
