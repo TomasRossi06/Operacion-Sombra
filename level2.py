@@ -18,7 +18,7 @@ target_patent: string con la patente que el jugador debe encontrar.Cada celda co
 
 
 parking_lot = [[None] * COLUMNS for i in range(ROWS)]
-vehicles       = {}
+vehicles = {}
 target_patent = None
 
 
@@ -67,7 +67,7 @@ def initialize():
     global target_patent, parking_lot, vehicles
 
     parking_lot = [[None] * COLUMNS for i in range(ROWS)]
-    vehicles       = {}
+    vehicles = {}
 
     positions = [[f, c] for f in range(ROWS) for c in range(COLUMNS)]
 
@@ -168,7 +168,7 @@ def Level2():
     |         False si supero el limite de errores o abandono la mision.
     """
     initialize()
-    errors    = 0
+    errors = 0
     MAX_errors = 3
 
     while True:
